@@ -1,23 +1,24 @@
 <template>
     <div class="header-wrapper">
+        <TopHeader></TopHeader>
         <div class="bot-header">
             <div class="container">
                 <div class="row">
                     <div class="col-2">
-                        <a href="">
+                        <router-link to="/" tag="li" class="menu-item">
                             <img src="../assets/img/logo.png" alt="logo">
-                        </a>
+                        </router-link>
                     </div>
                     <div class="col-10 d-flex flex-column">
                         <div class="mt-4 d-flex justify-content-end">
-                            <div class="btn-click d-flex ">
-                                <div class="btn-cart mr-2">
+                            <div class="btn-click d-flex">
+                                <router-link to="/cart" class="btn-cart mr-2">
                                     <span><i class="fa fa-shopping-cart mr-2"></i>Giỏ hàng</span>
                                     <span class="num ml-2">0</span>
-                                </div>
-                                <div class="btn-user">
+                                </router-link>
+                                <router-link to="/login" class="btn-user">
                                     <span><i class="fa fa-user mr-2"></i>Đăng nhập</span>
-                                </div>
+                                </router-link>
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-end">
@@ -46,32 +47,46 @@
         <div class="sticky-nav">
             <div class="header-menu container">
                 <ul class="menu-parent">
-                    <li class="menu-item">Trang chủ</li>
-                    <li class="menu-item">Giới thiệu</li>
+                    <li class="menu-item">
+                        <router-link to="/">Trang chủ</router-link>
+                    </li>
+                    <li class="menu-item">
+                        <router-link to="/gioi-thieu">Giới thiệu</router-link>
+                    </li>
                     <li class="dropdown menu-item">
-                        Sản phẩm
-                        <ul class="dropdown-menu ">
-                            <li><a href="#">Cốc sứ</a></li>
-                            <li><a href="#">Khung ảnh</a></li>
-                            <li><a href="#">Gấu bông</a></li>
-                            <li><a href="#">Đồng hồ</a></li>
-                            <li><a href="#">Đồ trang trí</a></li>
+                        <router-link to="/products" class="dropdown-toggle">Sản phẩm</router-link>
+                        <ul class="dropdown-menu">
+                            <li><router-link to="/products/coc-su">Cốc sứ</router-link></li>
+                            <li><router-link to="/products/khung-anh">Khung ảnh</router-link></li>
+                            <li><router-link to="/products/gau-bong">Gấu bông</router-link></li>
+                            <li><router-link to="/products/dong-ho">Đồng hồ</router-link></li>
+                            <li><router-link to="/products/do-trang-tri">Đồ trang trí</router-link></li>
                         </ul>
                     </li>
-                    <li class="dropdown menu-item ">
-                        Quà tặng sự kiện
-                        <ul class="dropdown-menu ">
-                            <li><a href="#">Quà sinh nhật</a></li>
-                            <li><a href="#">Quà giáng sinh</a></li>
-                            <li><a href="#">Quà lưu niệm</a></li>
+                    <li class="dropdown menu-item">
+                        <router-link to="/qua-tang-su-kien" class="dropdown-toggle">Quà tặng sự kiện</router-link>
+                        <ul class="dropdown-menu">
+                            <li><router-link to="/qua-tang-sinh-nhat">Quà sinh nhật</router-link></li>
+                            <li><router-link to="/qua-tang-giang-sinh">Quà giáng sinh</router-link></li>
+                            <li><router-link to="/qua-luu-niem">Quà lưu niệm</router-link></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
-
     </div>
 </template>
+
+<script>
+import TopHeader from '@/components/TopHeader.vue';
+
+export default {
+    components: {
+        TopHeader
+    }
+}
+
+</script>
 
 <style>
 .bot-header {
@@ -89,6 +104,10 @@
     display: block;
     width: 150px;
     text-align: center;
+}
+
+.btn-click > a {
+    color: red;
 }
 
 .btn-cart:hover,
@@ -133,13 +152,12 @@
     background-color: red;
     height: 40px;
     z-index: 100;
-    color: white;
     font-size: 17px;
 }
 
 .header-menu {
     display: flex;
-    justify-content: center;
+    justify-content: start;
 }
 
 .menu-parent {
@@ -149,17 +167,13 @@
     margin: 0;
 }
 
-.menu-parent .menu-item {
-    margin-right: 20px;
+.menu-parent>.menu-item>a {
+    margin: 10px;
     line-height: 40px;
     cursor: pointer;
     transition: background-color 0.3s;
     position: relative;
-}
-
-.menu-parent .menu-item:hover {
-    background-color: #f0f0f0;
-    color: rgb(0, 0, 0);
+    color: white;
 }
 
 .dropdown-menu {
@@ -171,23 +185,24 @@
     padding: 0 0;
     margin: 0;
     width: 200px;
-    padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.menu-parent .menu-item:hover .dropdown-menu {
+.menu-parent li:hover .dropdown-menu {
     display: block;
 }
 
-.dropdown-menu li {
+.dropdown-menu>li {
     background-color: #ffffff;
+    height: 40px;
+    text-align: center;
 }
 
-.dropdown-menu li a {
+.dropdown-menu>li>a {
     display: block;
     text-decoration: none;
     color: #000000;
-    text-align: center;
+    line-height: 2;
 }
 
 .dropdown-menu li:hover {

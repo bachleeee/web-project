@@ -2,12 +2,18 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
-
+import Product from '@/views/Product.vue';
+import Cart from '@/views/Cart.vue';
 const routes = [
     {
         path: "/",
         name: "HomePage",
         component: Home,
+    },
+    {
+        path: "/products",
+        name: "Product",
+        component: Product,
     },
     {
         path: "/login",
@@ -19,7 +25,11 @@ const routes = [
         name: "Signup",
         component: Signup,
     },
-   
+    {
+        path: "/Cart",
+        name: "Cart",
+        component: Cart,
+    },
 ];
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
