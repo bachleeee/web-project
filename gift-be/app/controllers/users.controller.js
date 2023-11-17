@@ -1,15 +1,12 @@
 const ApiError = require("../api-error");
 const userService = require("../services/user.service");
+const { generateToken } = require('../config/jwtToken');
 
 exports.createUser = async (req, res, next) => {
   const existingUser = await userService.findUser(req.body.email);
 
   if (existingUser) {
     return next(new ApiError("User already exists", 400));
-  }
-
-  if (!req.body?.name) {
-    return next(new ApiError("Name cannot be empty", 400));
   }
 
   try {
@@ -20,7 +17,6 @@ exports.createUser = async (req, res, next) => {
   }
 };
 
-
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -29,16 +25,21 @@ exports.loginUser = async (req, res, next) => {
   if (!user) {
     return next(new ApiError("User not found", 401));
   }
-  
+
   if (user.password !== password) {
     return next(new ApiError("Invalid password", 401));
   }
 
+  // Tạo token
+  const token = generateToken(user._id);
+
+  // Trả về token trong phản hồi
   res.json({
     _id: user._id,
     name: user.name,
     email: user.email,
     phone: user.phone,
+    token: token,  // Thêm token vào phản hồi
   });
 };
 
@@ -56,6 +57,7 @@ exports.findAll = async (req, res, next) => {
   }
   return res.send(documents);
 };
+
 exports.findOne = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -68,6 +70,7 @@ exports.findOne = async (req, res, next) => {
     next(new ApiError(`An error accurred while retrieving user ${id}`, 500));
   }
 };
+
 exports.update = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     return next(new ApiError("Update data cannot be empty", 400));
@@ -117,7 +120,7 @@ exports.deleteAllUsers = async (req, res, next) => {
   }
 };
 
-exports.logout = async (req, res, next) => {
+exports.logoutUser = async (req, res, next) => {
   // Có thể có các bước xóa token hoặc phiên đăng nhập khác ở đây
   // Ví dụ: Xóa token khỏi cơ sở dữ liệu hoặc danh sách token đã phát hành
 

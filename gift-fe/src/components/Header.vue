@@ -12,27 +12,47 @@
                     <div class="col-10 d-flex flex-column">
                         <div class="mt-4 d-flex justify-content-end">
                             <div class="btn-click d-flex">
+                                
                                 <router-link to="/cart" class="btn-cart mr-2">
                                     <span><i class="fa fa-shopping-cart mr-2"></i>Giỏ hàng</span>
                                     <span class="num ml-2">0</span>
                                 </router-link>
-                                <router-link to="/login" class="btn-user">
-                                    <span><i class="fa fa-user mr-2"></i>Đăng nhập</span>
-                                </router-link>
+                                <div v-if="!authStore.isLoggedIn">
+                                    <router-link to="/login" class="btn-user">
+                                        <span><i class="fa fa-user mr-2"></i>Đăng nhập</span>
+                                    </router-link>
+                                </div>
+                                <div>
+                                    <div v-if="authStore.isLoggedIn" class="dropdown" @mouseover="showDropdown = true"
+                                        @mouseleave="showDropdown = false">
+                                        <button class="btn-user">
+                                            <span><i class="fa fa-user mr-2"></i>{{ authStore.user.name }}</span>
+                                        </button>
+                                        <div v-if="showDropdown" class="dropdown-content">
+                                            <!-- Hiển thị thông tin người dùng -->
+                                            <router-link :to="{ name: 'user', props: { user: authStore.user.name } }">
+                                                Thông tin
+                                            </router-link>
+
+                                            <!-- Thêm các thông tin khác nếu cần -->
+                                            <button class="btn btn-outline-danger" @click="logoutClick">Đăng xuất</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-end">
                             <form action="/search" method="GET" class="form-inline">
                                 <div class="input-group">
-                                    <input type="text" name="query" class="form-control" style="width: 400px;"
+                                    <input type="text" name="name" class="form-control" style="width: 400px;"
                                         placeholder="Bạn muốn tìm quà tặng...">
-                                    <select class="product-cat" name="product-cat" id="" style="width: 200px;">
+                                    <select class="product-cat" name="category" id="" style="width: 200px;">
                                         <option value="0">Tất cả danh mục</option>
-                                        <option value="0">Cốc sứ</option>
-                                        <option value="0">Đồng hồ</option>
-                                        <option value="0">Khung ảnh</option>
-                                        <option value="0">Gấu bông</option>
-                                        <option value="0">Đồ trang trí</option>
+                                        <option value="coc-su">Cốc sứ</option>
+                                        <option value="dong-ho">Đồng hồ</option>
+                                        <option value="khung-anh">Khung ảnh</option>
+                                        <option value="gau-bong">Gấu bông</option>
+                                        <option value="do-trang-tri">Đồ trang trí</option>
                                     </select>
                                     <div class="input-group-append">
                                         <button type="submit" class="btn btn-outline-danger">Tìm kiếm</button>
@@ -79,13 +99,75 @@
 
 <script>
 import TopHeader from '@/components/TopHeader.vue';
-
+import UserService from '@/service/user.service'
 export default {
     components: {
         TopHeader
-    }
-}
+    },
+    computed: {
+        authStore() {
+            return useAuthStore();
+        },
+    },
+    data() {
+        return {
+            showDropdown: false,
+            user: null,
+        };
+    },
+    methods: {
+        toggleDropdown() {
+            this.showDropdown = !this.showDropdown;
+        },
+        logoutClick() {
+            const shouldLogout = window.confirm('Bạn có chắc chắn muốn đăng xuất?');
 
+            if (shouldLogout) {
+                // Thực hiện đăng xuất
+                this.authStore.logout();
+            }
+        },
+        // async getUser() {
+        //     try {
+        //         if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
+        //             this.user = await UserService.get(this.authStore.user._id);
+        //             console.log(this.user);
+        //         } else {
+        //             console.error('User is not logged in.');
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // },
+    },
+    // mounted() {
+    //     if (this.authStore.isLoggedIn) {
+    //         // Nếu đã đăng nhập, thực hiện getUser
+    //         this.getUser();
+    //     } else {
+    //         // Nếu chưa đăng nhập, chờ sự kiện đăng nhập thành công trước khi thực hiện getUser
+    //         this.$watch(() => this.authStore.isLoggedIn, (newVal) => {
+    //             if (newVal) {
+    //                 this.getUser();
+    //             }
+    //         });
+    //     }
+    // },
+}
+</script>
+
+<script setup>
+import { useAuthStore } from '@/store/auth';
+const { isLoggedIn, logout } = useAuthStore();
+
+const logoutClick = () => {
+    const shouldLogout = window.confirm('Bạn có chắc chắn muốn đăng xuất?');
+
+    if (shouldLogout) {
+        logout();
+        console.log('isLoggedIn:', isLoggedIn);
+    }
+};
 </script>
 
 <style>
@@ -106,7 +188,7 @@ export default {
     text-align: center;
 }
 
-.btn-click > a {
+.btn-click>a {
     color: red;
 }
 
@@ -207,5 +289,24 @@ export default {
 
 .dropdown-menu li:hover {
     background-color: #f0f0f0;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
 </style>

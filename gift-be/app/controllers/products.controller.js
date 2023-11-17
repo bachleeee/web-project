@@ -1,9 +1,14 @@
 const ApiError = require("../api-error");
 const productService = require("../services/product.service");
-
+const { convertToSlug } = require('../utils/createSlug');
 exports.createProduct = async (req, res, next) => {
   try {
-    const result = await productService.create(req.body);
+    const slug = convertToSlug(req.body.name);
+    const productData = {
+      ...req.body,
+      slug,
+    };
+    const result = await productService.create(productData);
     res.send(result);
   } catch (error) {
     next(new ApiError("An error accurred while creating the product", 500));
@@ -13,17 +18,37 @@ exports.createProduct = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
-    const { name } = req.query;
-    if (name) {
+    const { name, category } = req.query;
+
+    if (name && category) {
+      documents = await productService.findByNameAndCategory(name, category);
+    } else if (name) {
       documents = await productService.findByName(name);
+    } else if (category) {
+      documents = await productService.findByCategory(category);
     } else {
       documents = await productService.findAll();
     }
   } catch (error) {
-    next(new ApiError("An error accurred while retrieving products", 500));
+    next(new ApiError("An error occurred while retrieving products", 500));
   }
   return res.send(documents);
 };
+
+
+exports.findOneBySlug = async (req, res, next) => {
+  const { slug } = req.params;
+  try {
+    const document = await productService.findBySlug(slug);
+    if (!document) {
+      return next(new ApiError(`Product with slug ${slug} not found`, 404));
+    }
+    return res.send(document);
+  } catch (error) {
+    next(new ApiError(`An error accurred while retrieving product ${slug}`, 500));
+  }
+};
+
 exports.findOne = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -36,6 +61,7 @@ exports.findOne = async (req, res, next) => {
     next(new ApiError(`An error accurred while retrieving product ${id}`, 500));
   }
 };
+
 exports.update = async (req, res, next) => {
   if (Object.keys(req.body).length === 0) {
     return next(new ApiError("Update data cannot be empty", 400));
@@ -46,6 +72,9 @@ exports.update = async (req, res, next) => {
     description: req.body.description,
     price: req.body.price,
     quantity: req.body.quantity,
+    img: req.body.img,
+    category: req.body.category,
+
   };
   try {
     const document = await productService.update(id, _data);

@@ -6,22 +6,22 @@ import Order from '@/views/Order.vue';
 const routes = [
     {
         path: "/User",
-        name: "User",
+        name: "user",
         component: User,
     },
     {
         path: "/login",
-        name: "Login",
+        name: "login",
         component: Login,
     },
     {
         path: "/",
-        name: "Product",
+        name: "product",
         component: Product,
     },
     {
         path: "/order",
-        name: "Order",
+        name: "order",
         component: Order,
     },
     {

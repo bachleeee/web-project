@@ -1,5 +1,5 @@
 <template>
-    <div v-if="product" class="page">
+    <div v-if="product" class="container mt-4">
         <h4>Hiệu chỉnh Liên hệ</h4>
         <ProductForm :product="product" @submit:product="updateProduct" @delete:product="deleteProduct" />
         <p>{{ message }}</p>
@@ -50,7 +50,7 @@ export default {
             if (confirm("Bạn muốn xóa Liên hệ này?")) {
                 try {
                     await ProductService.delete(this.product._id);
-                    this.$router.push({ name: "productbook" });
+                    this.$router.push({ name: "product" });
                 } catch (error) {
                     console.log(error);
                 }

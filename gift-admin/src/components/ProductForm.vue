@@ -13,6 +13,8 @@
           <option value="coc-su">Cốc sứ</option>
           <option value="khung-anh">Khung ảnh</option>
           <option value="dong-ho">Đồng hồ</option>
+          <option value="do-trang-tri">Đồ trang trí</option>
+          <option value="gau-bong">Gấu bông</option>
         </Field>
         <ErrorMessage name="category" class="error-feedback" />
       </div>
@@ -23,7 +25,7 @@
       </div>
       <div class="form-group">
         <label for="price">Giá</label>
-        <Field name="price" type="text" class="form-control" v-model="productLocal.price" />
+        <Field name="price" type="number" class="form-control" v-model="productLocal.price" />
         <ErrorMessage name="price" class="error-feedback" />
       </div>
       <div class="form-group">
@@ -108,7 +110,6 @@ label {
 
 .form-control {
   width: 50%;
-  padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;

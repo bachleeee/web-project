@@ -18,7 +18,7 @@ class ProductService {
     const result = await this.databaseSetvices.products.findOneAndUpdate(
       product,
       {
-        $set: { img: "" },
+        $set: { },
       },
       {
         upsert: true,
@@ -45,14 +45,52 @@ class ProductService {
             $regex: new RegExp(name),
             $options: "i",
           },
-        })
-        .toArray();
+        }).toArray()
+      return products;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
+async findByCategory(category) {
+  try {
+    const products = await this.databaseSetvices.products.find({
+      category: category,
+    }).toArray();
+    return products;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+  async findByNameAndCategory(name, category) {
+    try {
+      // Sử dụng logic tìm kiếm phù hợp với cơ sở dữ liệu của bạn
+      const products = await this.databaseSetvices.products.find({
+        name: {
+          $regex: new RegExp(name),
+          $options: "i",
+        },
+        category: category,
+      }).toArray();
       return products;
     } catch (error) {
       throw new Error(error);
     }
   }
 
+  async findBySlug(slug) {
+    try {
+      const product = await this.databaseSetvices.products.findOne({
+        slug: slug,
+      });
+      return product;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
+  
   async findById(id) {
     try {
       const product = await this.databaseSetvices.products.findOne({
@@ -63,6 +101,7 @@ class ProductService {
       throw new Error(error);
     }
   }
+
   async update(id, updateProduct) {
     const filter ={
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,

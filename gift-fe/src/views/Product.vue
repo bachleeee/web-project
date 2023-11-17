@@ -2,43 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-3">
-                <div class="filter-card mb-3">
-                    <h3 class="filter-title">Tất cả sản phẩm</h3>
-                    <ul>
-                        <li>Cốc sứ</li>
-                        <li>Khung ảnh</li>
-                        <li>Gấu bông</li>
-                        <li>Đồng hồ</li>
-                        <li>Đồ trang trí</li>
-                    </ul>
-                </div>
-                <div class="filter-card mb-3">
-                    <h3 class="filter-title">Lọc</h3>
-                    <div>
-                        <hr>
-                        <h5 class="sub-title">Tình trạng</h5>
-                        <div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="" id="">
-                                <label for="" class="form-check-label">Còn hàng</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="" id="">
-                                <label for="" class="form-check-label">Hết hàng</label>
-                            </div>
-                        </div>
-                        <hr>
-                        <h5 class="sub-title">Giá</h5>
-                        <div class="d-flex align-items-center">
-                            <form class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInputValue" placeholder="From">
-                            </form>
-                            <form class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInputValue" placeholder="To">
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <Filter :products="products" />
             </div>
             <div class="col-9">
                 <div class="filter-sort-grid">
@@ -46,17 +10,14 @@
                         <div class="d-flex align-items-center gap-10">
                             <div class="mb-0">Sort by</div>
                             <select name="" id="" class="form-control form-select">
-                                <option value="price-ascending">Price: High-Low</option>
-                                <option value="price-descending">Price: Low-High</option>
-                                <option value="created-ascending">Date: Old-New</option>
-                                <option value="created-descending">Date: New-Old</option>
+
                             </select>
                         </div>
                         <div class="d-flex"></div>
                     </div>
                 </div>
                 <div class="products-list pb-5">
-                    <ProductList></ProductList>
+                    <ProductList :products="products" />
                 </div>
             </div>
         </div>
@@ -64,13 +25,34 @@
 </template>
   
 <script>
-import ProductList from '../components/ProductList.vue';
+import Filter from "../components/Filter.vue";
+import ProductService from "@/service/product.service";
+import ProductList from '@/components/ProductList.vue';
 export default {
     components: {
-        ProductList
-    }
-}
+        ProductList,
+        Filter,
+    },
+    data() {
+        return {
+            products: [],
+        };
+    },
+    methods: {
+        async getAllProduct() {
+            try {
+                this.products = await ProductService.getAll();
+            } catch (error) {
+                console.log(error);
+            }
+        },
 
+    },
+    mounted() {
+        this.getAllProduct();
+    },
+
+};
 </script>
 
 <style scoped>

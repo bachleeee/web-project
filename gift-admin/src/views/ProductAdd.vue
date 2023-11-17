@@ -1,7 +1,7 @@
 <template>
-    <div class="page">
+    <div class="container mt-4">
         <h4>Thêm phẩm mới</h4>
-        <ProductForm :product="product" @submit:product="createProduct"  />
+        <ProductForm :product="product" @submit:product="createProduct" />
         <p>{{ message }}</p>
     </div>
 </template>
@@ -30,11 +30,14 @@ export default {
             try {
                 await ProductService.create(data);
                 this.message = "Sản phẩm được thêm thành công.";
+                setTimeout(() => {
+                    this.$router.push({ name: "product" });
+                }, 2000);
             } catch (error) {
                 console.log(error);
             }
         },
-        
+
     },
 };
 </script>

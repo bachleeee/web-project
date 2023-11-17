@@ -73,25 +73,85 @@
                     <div class="intro-title">
                         <h2>QUÀ TẶNG MỚI NHẤT</h2>
                     </div>
-                    <div class="intro-product">
-                        <ProductList></ProductList>
+                    <div class="intro-product mt-4">
+                        <div class="row d-flex justify-content-center">
+                            <ProductList :products="visibleProducts" />
+                        </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
+    </div>
+    <div>
+        <p v-if="authStore.isLoggedIn">Welcome, {{ authStore.user.name }}</p>
     </div>
 </template>
 
 <script>
-import ProductList from '@/components/ProductList.vue';
-
+import ProductService from "@/service/product.service";
+import ProductList from "@/components/ProductList.vue";
+import UserService from '@/service/user.service'
+import { useAuthStore } from '@/store/auth';
 export default {
     components: {
-        ProductList
-    }
-}
+        ProductList,
+    },
+    data() {
+        return {
+            products: [],
+            visibleProducts: [],
+            maxVisibleProducts: 4,
+            user: null
+        };
+    },
+    methods: {
+        async getFourProduct() {
+            try {
+                this.products = await ProductService.getAll();
+                this.updateVisibleProducts();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        updateVisibleProducts() {
+            this.visibleProducts = this.products.slice(0, this.maxVisibleProducts);
+        },
+        async getUser() {
+            try {
+                if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
+                    this.user = await UserService.get(this.authStore.user._id);
+                    console.log(this.user);
+                } else {
+                    console.error('User is not logged in.');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    computed: {
+        authStore() {
+            return useAuthStore();
+        },
+    },
+    mounted() {
+        this.getFourProduct();
+
+        if (this.authStore.isLoggedIn) {
+            // Nếu đã đăng nhập, thực hiện getUser
+            this.getUser();
+        } else {
+            // Nếu chưa đăng nhập, chờ sự kiện đăng nhập thành công trước khi thực hiện getUser
+            this.$watch(() => this.authStore.isLoggedIn, (newVal) => {
+                if (newVal) {
+                    this.getUser();
+                }
+            });
+        }
+    },
+
+
+};
 </script>
 
 <style scoped>
@@ -138,4 +198,5 @@ export default {
 
 .intro-title {
     border-bottom: 2px solid red;
-}</style>
+}
+</style>

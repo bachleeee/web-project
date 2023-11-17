@@ -1,7 +1,7 @@
 <template>
   <Header></Header>
   
-    <router-view></router-view>
+    <router-view ></router-view>
   
   <Footer></Footer>
 </template>
@@ -13,7 +13,8 @@ export default {
   components: {
     Header,
     Footer,
-  }
+  },
+  
 }
 </script>
 
