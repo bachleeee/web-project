@@ -32,8 +32,6 @@ export default {
 };
 </script>
 
-  
-
 <style scoped>
 .product-card {
   border: 1px solid #ddd;

@@ -50,7 +50,7 @@
   
 <script>
 import UserService from '@/service/user.service';
-import * as yup from "yup";
+import * as yup from 'yup';
 import { ErrorMessage } from "vee-validate";
 
 export default {

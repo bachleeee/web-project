@@ -35,7 +35,6 @@ exports.findAll = async (req, res, next) => {
   return res.send(documents);
 };
 
-
 exports.findOneBySlug = async (req, res, next) => {
   const { slug } = req.params;
   try {

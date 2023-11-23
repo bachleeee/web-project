@@ -1,6 +1,10 @@
 const ApiError = require("../api-error");
 const userService = require("../services/user.service");
+const productService = require("../services/product.service");
+const cartService = require("../services/cart.service");
+const orderService = require("../services/order.service");
 const { generateToken } = require('../config/jwtToken');
+const { generateRefreshToken } = require('../config/refreshtoken');
 
 exports.createUser = async (req, res, next) => {
   const existingUser = await userService.findUser(req.body.email);
@@ -21,7 +25,11 @@ exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await userService.findUser(email);
-
+  const refreshToken = await generateRefreshToken(user?._id);
+  
+  res.cookie("token", refreshToken, {
+    maxAge: 72 * 60 * 60 * 1000,
+  });
   if (!user) {
     return next(new ApiError("User not found", 401));
   }
@@ -30,16 +38,12 @@ exports.loginUser = async (req, res, next) => {
     return next(new ApiError("Invalid password", 401));
   }
 
-  // Tạo token
-  const token = generateToken(user._id);
-
-  // Trả về token trong phản hồi
   res.json({
     _id: user._id,
     name: user.name,
     email: user.email,
     phone: user.phone,
-    token: token,  // Thêm token vào phản hồi
+    token: generateToken(user?._id),  // Thêm token vào phản hồi
   });
 };
 
@@ -93,7 +97,6 @@ exports.update = async (req, res, next) => {
   }
 };
 
-
 exports.deleteUser = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -128,4 +131,106 @@ exports.logoutUser = async (req, res, next) => {
   res.json({ message: "Logout successful" });
 };
 
+exports.userCart = async (req, res, next) => {
+  const { cart } = req.body;
+  const { id } = req.user;
+  try {
+    let products = [];
+    const user = await userService.findById(id);
 
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.product = cart[i]._id;
+      object.count = cart[i].count;
+      let getProduct = await productService.findById(cart[i]._id);
+      object.price = getProduct.price;
+      object.img = getProduct.img;
+      object.name = getProduct.name;
+      products.push(object);
+    }
+    let cartTotal = 0;
+    for (let i = 0; i < products.length; i++) {
+      cartTotal = cartTotal + products[i].price * products[i].count;
+    }
+    let newCart = ({
+      products,
+      cartTotal,
+      orderby: user?._id,
+    })
+
+    await userService.addCart(user?._id,products)
+    
+    const savedCart = await cartService.createCart(newCart);
+
+    res.json(savedCart);
+
+  } catch (error) {
+    next(new ApiError("An error occurred while add to cart", 500));
+  }
+};
+
+exports.deleteuserCart = async (req, res, next) => {
+  const { id } = req.user;
+  const { cart_id, product_id } = req.body;
+  try {
+    
+    const document = await userService.deleteOneCart(id,product_id);
+    const documentDelete = await cartService.deleteOneCart(cart_id);
+    if ( !document && !documentDelete) {
+      return next(new ApiError(`cart not found`, 404));
+    }
+    return res.send({
+      message: `cart was deleted successfully`,
+    });
+  } catch (error) {
+    next(new ApiError(`An error accurred while deleting cart`, 500));
+  }
+};
+
+exports.getUserCart = async (req, res, next) => {
+  try {
+    if (req.user && req.user.id) {
+      // res.send(req.user.id)
+      const documents = await cartService.findById(req.user.id);
+      return res.send(documents);
+    } else {
+      return res.status(400).send({ error: 'Invalid user information.' });
+    }
+  } catch (error) {
+    next(new ApiError("An error occurred while retrieving user's cart", 500));
+  }
+};
+
+exports.createOrder = async (req, res) => {
+  const { id } = req.user;
+  const { total } = req.body;
+
+  try {
+    const user = await userService.findById(id);
+
+    let userCart = await cartService.findById(id);
+
+    let newOrder = ({
+      products: userCart,
+      amount: total,
+      orderby: user._id,
+      orderStatus: "placed",
+    });
+
+    const savedOrder = await orderService.createOrder(newOrder);
+
+    res.json(savedOrder);
+
+    let update = userCart.products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count } },
+        },
+      };
+    });
+
+  } catch (error) {
+    throw new Error(error);
+  }
+};

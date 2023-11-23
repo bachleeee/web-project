@@ -12,32 +12,19 @@
                     <div class="col-10 d-flex flex-column">
                         <div class="mt-4 d-flex justify-content-end">
                             <div class="btn-click d-flex">
-                                
                                 <router-link to="/cart" class="btn-cart mr-2">
-                                    <span><i class="fa fa-shopping-cart mr-2"></i>Giỏ hàng</span>
-                                    <span class="num ml-2">0</span>
+                                    <span><i class="fa fa-shopping-cart"></i></span>
+                                    <!-- <span class="num ml-2">
+                                        {{ authStore.isLoggedIn ? authStore.user.cart.length : 0 }}
+                                    </span> -->
                                 </router-link>
-                                <div v-if="!authStore.isLoggedIn">
+                                <div>
                                     <router-link to="/login" class="btn-user">
-                                        <span><i class="fa fa-user mr-2"></i>Đăng nhập</span>
+                                        <span><i class="fa fa-user"></i></span>
                                     </router-link>
                                 </div>
-                                <div>
-                                    <div v-if="authStore.isLoggedIn" class="dropdown" @mouseover="showDropdown = true"
-                                        @mouseleave="showDropdown = false">
-                                        <button class="btn-user">
-                                            <span><i class="fa fa-user mr-2"></i>{{ authStore.user.name }}</span>
-                                        </button>
-                                        <div v-if="showDropdown" class="dropdown-content">
-                                            <!-- Hiển thị thông tin người dùng -->
-                                            <router-link :to="{ name: 'user', props: { user: authStore.user.name } }">
-                                                Thông tin
-                                            </router-link>
-
-                                            <!-- Thêm các thông tin khác nếu cần -->
-                                            <button class="btn btn-outline-danger" @click="logoutClick">Đăng xuất</button>
-                                        </div>
-                                    </div>
+                                <div v-if="authStore.isLoggedIn">
+                                    <button class="btn btn-outline-danger" @click="logoutClick">Đăng xuất</button>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +86,9 @@
 
 <script>
 import TopHeader from '@/components/TopHeader.vue';
-import UserService from '@/service/user.service'
+import UserService from '@/service/user.service';
+import { useAuthStore } from '@/store/auth';
+
 export default {
     components: {
         TopHeader
@@ -116,6 +105,18 @@ export default {
         };
     },
     methods: {
+        async getUser() {
+            try {
+                if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
+                    this.user = await UserService.get(this.authStore.user._id);
+                    console.log(this.user);
+                } else {
+                    console.error('User is not logged in.');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
         toggleDropdown() {
             this.showDropdown = !this.showDropdown;
         },
@@ -127,32 +128,11 @@ export default {
                 this.authStore.logout();
             }
         },
-        // async getUser() {
-        //     try {
-        //         if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
-        //             this.user = await UserService.get(this.authStore.user._id);
-        //             console.log(this.user);
-        //         } else {
-        //             console.error('User is not logged in.');
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // },
+
     },
-    // mounted() {
-    //     if (this.authStore.isLoggedIn) {
-    //         // Nếu đã đăng nhập, thực hiện getUser
-    //         this.getUser();
-    //     } else {
-    //         // Nếu chưa đăng nhập, chờ sự kiện đăng nhập thành công trước khi thực hiện getUser
-    //         this.$watch(() => this.authStore.isLoggedIn, (newVal) => {
-    //             if (newVal) {
-    //                 this.getUser();
-    //             }
-    //         });
-    //     }
-    // },
+    mounted() {
+        this.getUser()
+    },
 }
 </script>
 
@@ -165,7 +145,7 @@ const logoutClick = () => {
 
     if (shouldLogout) {
         logout();
-        console.log('isLoggedIn:', isLoggedIn);
+        this.$router.go(0);
     }
 };
 </script>
@@ -184,7 +164,7 @@ const logoutClick = () => {
     border-radius: 3px;
     padding: 10px;
     display: block;
-    width: 150px;
+    width: 50px;
     text-align: center;
 }
 
@@ -289,21 +269,6 @@ const logoutClick = () => {
 
 .dropdown-menu li:hover {
     background-color: #f0f0f0;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 999;
-
 }
 
 .dropdown:hover .dropdown-content {

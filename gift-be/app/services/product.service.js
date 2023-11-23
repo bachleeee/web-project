@@ -96,11 +96,15 @@ async findByCategory(category) {
       const product = await this.databaseSetvices.products.findOne({
         _id: new ObjectId(id),
       });
-      return product;
+      if (!product) {
+        return null;
+      }
+      return product; 
     } catch (error) {
       throw new Error(error);
     }
   }
+  
 
   async update(id, updateProduct) {
     const filter ={

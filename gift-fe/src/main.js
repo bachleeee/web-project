@@ -5,5 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import router from "./router";
 import { createPinia } from 'pinia';
+
 const pinia = createPinia();
+
 createApp(App).use(pinia).use(router).mount("#app");
+import { useAuthStore } from '@/store/auth';
+
+const MyauthStore = useAuthStore();
+MyauthStore.checkLoginStatus();

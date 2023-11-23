@@ -25,7 +25,7 @@
 </template>
   
 <script>
-import Filter from "../components/Filter.vue";
+import Filter from "@/components/Filter.vue";
 import ProductService from "@/service/product.service";
 import ProductList from '@/components/ProductList.vue';
 export default {
@@ -46,7 +46,6 @@ export default {
                 console.log(error);
             }
         },
-
     },
     mounted() {
         this.getAllProduct();

@@ -18,5 +18,35 @@ class UserService {
     async update(id, data) {
         return (await this.api.put(`/${id}`, data)).data;
     }
+    async deleteProductFromCart(token, data) {
+        try {
+          const response = await this.api.delete('/cart', {
+            data: data,
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+          });
+      
+          return response.data;
+        } catch (error) {
+          throw new Error(error);
+        }
+      }
+      
+    async addtocart(token, data) {
+        return (await this.api.post('/cart', data,{
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            },
+        })).data;
+    }
+    
+    async getCart(token) {
+        return (await this.api.get('/cart',{
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            },
+        })).data;
+    }
 }
 export default new UserService();

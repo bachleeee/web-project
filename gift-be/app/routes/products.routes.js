@@ -7,6 +7,7 @@ const {
   deleteProduct,
   deleteAllProducts,
   findOneBySlug,
+  findByCat
 } = require("../controllers/products.controller");
 
 const router = express.Router();

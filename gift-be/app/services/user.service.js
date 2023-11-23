@@ -13,6 +13,7 @@ class UserService {
     );
     return _user;
   }
+
   async create(data) {
     const user = this.extractUserData(data);
     const result = await this.databaseSetvices.users.findOneAndUpdate(
@@ -63,6 +64,7 @@ class UserService {
       throw new Error(error);
     }
   }
+  
   async update(id, updateUser) {
     const filter ={
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
@@ -71,7 +73,6 @@ class UserService {
     const options = {
       returnDocument: "after",
     };
-
     try {
       const user = await this.databaseSetvices.users.findOneAndUpdate(
         filter,
@@ -85,6 +86,30 @@ class UserService {
       throw new Error(error);
     }
   }
+  
+  async addCart(id, products) {
+    const filter = {
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    };
+  
+    const update = { $push: { cart: { $each: products } } };
+  
+    const options = {
+      returnDocument: 'after',
+    };
+  
+    try {
+      const updatedUser  = await this.databaseSetvices.users.findOneAndUpdate(
+        filter,
+        update,
+        options
+      );
+      return updatedUser ;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
   async deleteOne(id) {
     try {
       const user = await this.databaseSetvices.users.findOneAndDelete({
@@ -95,6 +120,20 @@ class UserService {
       throw new Error(error);
     }
   }
+
+  async deleteOneCart(userId, productId) {
+    try {
+      const user = await this.databaseSetvices.users.findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        { $pull: { cart: { product: productId } } },
+        { returnDocument: 'after' }
+      );
+      return user;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
   async deleteAll() {
     try {
       const users = await this.databaseSetvices.users.deleteMany();

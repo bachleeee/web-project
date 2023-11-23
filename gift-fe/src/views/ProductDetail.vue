@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-4">
-          <img :src=product.img>
+          <img :src="product.img">
         </div>
         <div class="col-4">
           <h1>{{ product.name }}</h1>
@@ -13,12 +13,23 @@
             {{ product.quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}
           </p>
           Giá:
-          <p class="price">{{ formatCurrency(product.price) }}</p>
-
-          <div class="d-flex justify-content-center">
-            <button type="button" class="btn btn-danger btn-lg " :class="{ 'btn-disabled': product.quantity <= 0 }"
-              :disabled="product.quantity <= 0">Đặt hàng</button>
+          
+          <div class="d-flex justify-content-between my-4 ">
+            <p class="price">{{ formatCurrency(product.price) }}</p>
+            <div>
+              <label for="quantity" >Số lượng:</label>
+            <input class="quantity-input" type="number" id="quantity" v-model="quantity" min="1">
+            </div>
           </div>
+          <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-danger btn-lg" :class="{ 'btn-disabled': product.quantity <= 0 }"
+              :disabled="product.quantity <= 0 || !authStore.isLoggedIn" @click="addToCart">
+              {{ authStore.isLoggedIn ? 'Đặt hàng' : 'Đăng nhập để đặt hàng' }}
+            </button>
+          </div>
+          <div class="d-flex justify-content-center">
+              <p v-if="showAddToCartMessage" class="ml-3 text-success">Đã thêm vào giỏ hàng!</p>
+            </div>
         </div>
       </div>
     </div>
@@ -27,11 +38,18 @@
 
 
 <script>
-import ProductService from '@/service/product.service'
+import ProductService from '@/service/product.service';
+import UserService from '@/service/user.service';
+import { useAuthStore } from '@/store/auth';
+import Cookies from 'js-cookie';
+
 export default {
   data() {
     return {
       product: null,
+      user: null,
+      quantity: 1,
+      showAddToCartMessage: false,
     };
   },
   async created() {
@@ -60,8 +78,51 @@ export default {
       }).format(price);
 
       return `${formattedPrice}`;
-    }
-  }
+    },
+    async getUser() {
+      try {
+        if (this.authStore.isLoggedIn) { 
+          this.user = await UserService.get(this.authStore.user._id);
+          console.log(this.user);
+        } else {
+          console.error('User is not logged in.');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async addToCart() {
+      try {
+        const cookieValue = Cookies.get('token');
+        
+        const cartItem = {
+          _id: this.product._id,
+          count: this.quantity,
+        };
+
+        const newCartItemArray = { cart: [cartItem] };
+
+        if (this.authStore.isLoggedIn) {
+          await UserService.addtocart(cookieValue, newCartItemArray);
+          this.showAddToCartMessage = true;
+
+          setTimeout(() => {
+            this.showAddToCartMessage = false;
+          }, 3000);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  },
+  computed: {
+    authStore() {
+      return useAuthStore();
+    },
+  },
+  mounted() {
+    this.getUser();
+  },
 };
 </script>
 
@@ -99,4 +160,17 @@ h1 {
   color: #e44d26;
   font-weight: bold;
 }
+
+.quantity-input {
+  margin: 0;
+  border: 1px solid #ced4da; 
+  width: 60px;
+  height: 40px;
+  text-align: center; 
+}
+
+.quantity-input:hover {
+  border-color: #6c757d; 
+}
+
 </style>

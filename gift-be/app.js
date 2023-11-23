@@ -3,11 +3,14 @@ const cors = require("cors");
 const ApiError = require("./app/api-error");
 const usersRouter = require("./app/routes/users.routes");
 const productsRouter = require("./app/routes/products.routes");
+const cookieParser = require("cookie-parser");
+
 require('dotenv').config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.json({

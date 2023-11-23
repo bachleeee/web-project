@@ -81,10 +81,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div>
-        <p v-if="authStore.isLoggedIn">Welcome, {{ authStore.user.name }}</p>
-    </div>
+    </div>  
+    
 </template>
 
 <script>
@@ -92,6 +90,7 @@ import ProductService from "@/service/product.service";
 import ProductList from "@/components/ProductList.vue";
 import UserService from '@/service/user.service'
 import { useAuthStore } from '@/store/auth';
+
 export default {
     components: {
         ProductList,
@@ -120,7 +119,7 @@ export default {
             try {
                 if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
                     this.user = await UserService.get(this.authStore.user._id);
-                    console.log(this.user);
+                    // console.log(this.user);
                 } else {
                     console.error('User is not logged in.');
                 }
@@ -136,18 +135,7 @@ export default {
     },
     mounted() {
         this.getFourProduct();
-
-        if (this.authStore.isLoggedIn) {
-            // Nếu đã đăng nhập, thực hiện getUser
-            this.getUser();
-        } else {
-            // Nếu chưa đăng nhập, chờ sự kiện đăng nhập thành công trước khi thực hiện getUser
-            this.$watch(() => this.authStore.isLoggedIn, (newVal) => {
-                if (newVal) {
-                    this.getUser();
-                }
-            });
-        }
+        this.getUser();
     },
 
 

@@ -25,6 +25,12 @@ class DatabaseServices {
   get products() {
     return this.db.collection("products");
   }
+  get cart() {
+    return this.db.collection("cart");
+  }
+  get order() {
+    return this.db.collection("order");
+  }
 }
 const databaseSetvices = new DatabaseServices();
 module.exports = databaseSetvices;

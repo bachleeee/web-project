@@ -5,7 +5,7 @@ import Signup from '@/views/Signup.vue';
 import Product from '@/views/Product.vue';
 import Cart from '@/views/Cart.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
-import User from '@/views/User.vue'
+import Order from '@/views/Order.vue'
 const routes = [
     {
         path: "/",
@@ -37,6 +37,11 @@ const routes = [
         path: "/Cart",
         name: "Cart",
         component: Cart,
+    },
+    {
+        path: "/order",
+        name: "order",
+        component: Order,
     },
     {
         path: '/products/:slug',
