@@ -1,6 +1,6 @@
 <template>
     <div v-if="product" class="container mt-4">
-        <h4>Hiệu chỉnh Liên hệ</h4>
+        <h4>Hiệu chỉnh sản phẩm</h4>
         <ProductForm :product="product" @submit:product="updateProduct" @delete:product="deleteProduct" />
         <p>{{ message }}</p>
     </div>
@@ -41,13 +41,13 @@ export default {
         async updateProduct(data) {
             try {
                 await ProductService.update(this.product._id, data);
-                this.message = "Liên hệ được cập nhật thành công.";
+                window.alert("sản phẩm được cập nhật thành công.");
             } catch (error) {
                 console.log(error);
             }
         },
         async deleteProduct() {
-            if (confirm("Bạn muốn xóa Liên hệ này?")) {
+            if (confirm("Bạn muốn xóa sản phẩm này?")) {
                 try {
                     await ProductService.delete(this.product._id);
                     this.$router.push({ name: "product" });

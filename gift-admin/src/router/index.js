@@ -10,12 +10,12 @@ const routes = [
         component: User,
     },
     {
-        path: "/login",
+        path: "/",
         name: "login",
         component: Login,
     },
     {
-        path: "/",
+        path: "/product",
         name: "product",
         component: Product,
     },
@@ -31,7 +31,7 @@ const routes = [
         props: true 
     },
     {
-        path:"/",
+        path:"/product.add",
         name: "product.add",
         component: () => import("@/views/ProductAdd.vue"),
         props: true

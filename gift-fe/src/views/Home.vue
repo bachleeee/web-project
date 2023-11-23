@@ -82,13 +82,12 @@
             </div>
         </div>
     </div>  
-    
+    <div>{{ authStore.name }}</div>
 </template>
 
 <script>
 import ProductService from "@/service/product.service";
 import ProductList from "@/components/ProductList.vue";
-import UserService from '@/service/user.service'
 import { useAuthStore } from '@/store/auth';
 
 export default {
@@ -115,18 +114,7 @@ export default {
         updateVisibleProducts() {
             this.visibleProducts = this.products.slice(0, this.maxVisibleProducts);
         },
-        async getUser() {
-            try {
-                if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
-                    this.user = await UserService.get(this.authStore.user._id);
-                    // console.log(this.user);
-                } else {
-                    console.error('User is not logged in.');
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        
     },
     computed: {
         authStore() {
@@ -135,7 +123,6 @@ export default {
     },
     mounted() {
         this.getFourProduct();
-        this.getUser();
     },
 
 

@@ -5,7 +5,8 @@ import Signup from '@/views/Signup.vue';
 import Product from '@/views/Product.vue';
 import Cart from '@/views/Cart.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
-import Order from '@/views/Order.vue'
+import Order from '@/views/Order.vue';
+import Intro from '@/views/Intro.vue';
 const routes = [
     {
         path: "/",
@@ -17,7 +18,7 @@ const routes = [
         name: 'user',
         component: () => import('@/views/User.vue'),
         props: true,
-      },
+    },
     {
         path: "/products",
         name: "Product",
@@ -47,7 +48,12 @@ const routes = [
         path: '/products/:slug',
         name: 'productdetail',
         component: ProductDetail,
-      },
+    },
+    {
+        path: "/intro",
+        name: "intro",
+        component: Intro,
+    },
 ];
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

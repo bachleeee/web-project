@@ -26,7 +26,7 @@ exports.loginUser = async (req, res, next) => {
 
   const user = await userService.findUser(email);
   const refreshToken = await generateRefreshToken(user?._id);
-  
+
   res.cookie("token", refreshToken, {
     maxAge: 72 * 60 * 60 * 1000,
   });
@@ -43,8 +43,23 @@ exports.loginUser = async (req, res, next) => {
     name: user.name,
     email: user.email,
     phone: user.phone,
-    token: generateToken(user?._id),  // Thêm token vào phản hồi
+    token: generateToken(user?._id),  
   });
+};
+exports.loginAdmin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const user = await userService.findUser(email);
+
+  if (!user) {
+    return next(new ApiError("User not found", 401));
+  }
+
+  if (user.password !== password || user.role !== 'admin') {
+    return next(new ApiError("Login fail", 401));
+  }
+
+  res.json(user);
 };
 
 exports.findAll = async (req, res, next) => {
@@ -158,8 +173,8 @@ exports.userCart = async (req, res, next) => {
       orderby: user?._id,
     })
 
-    await userService.addCart(user?._id,products)
-    
+    await userService.addCart(user?._id, products)
+
     const savedCart = await cartService.createCart(newCart);
 
     res.json(savedCart);
@@ -173,10 +188,10 @@ exports.deleteuserCart = async (req, res, next) => {
   const { id } = req.user;
   const { cart_id, product_id } = req.body;
   try {
-    
-    const document = await userService.deleteOneCart(id,product_id);
+
+    const document = await userService.deleteOneCart(id, product_id);
     const documentDelete = await cartService.deleteOneCart(cart_id);
-    if ( !document && !documentDelete) {
+    if (!document && !documentDelete) {
       return next(new ApiError(`cart not found`, 404));
     }
     return res.send({
@@ -221,16 +236,86 @@ exports.createOrder = async (req, res) => {
 
     res.json(savedOrder);
 
-    let update = userCart.products.map((item) => {
-      return {
-        updateOne: {
-          filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
-        },
-      };
-    });
-
   } catch (error) {
     throw new Error(error);
   }
 };
+
+exports.getUserOrder = async (req, res, next) => {
+  try {
+    if (req.user && req.user.id) {
+      // res.send(req.user.id)
+      const documents = await orderService.findById(req.user.id);
+      return res.send(documents);
+    } else {
+      return res.status(400).send({ error: 'Invalid user information.' });
+    }
+  } catch (error) {
+    next(new ApiError("An error occurred while retrieving user's Order", 500));
+  }
+};
+
+exports.getAllOrder = async (req, res, next) => {
+  let documents = [];
+  try {
+    documents = await orderService.findAll();
+
+  } catch (error) {
+    next(new ApiError("An error accurred while retrieving order", 500));
+  }
+  return res.send(documents);
+};
+
+exports.deleteUserOrder = async (req, res, next) => {
+  const { order_id } = req.body;
+  try {
+
+    const documentDelete = await orderService.deleteOneOrder(order_id);
+    if (!documentDelete) {
+      return next(new ApiError(`order not found`, 404));
+    }
+    return res.send({
+      message: `order was deleted successfully`,
+    });
+  } catch (error) {
+    next(new ApiError(`An error accurred while deleting order`, 500));
+  }
+};
+
+exports.updateOrderStatus = async (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    return next(new ApiError("Update data cannot be empty", 400));
+  }
+  const id = req.body;
+  const _data = {
+    orderStatus: req.body.orderStatus,
+  };
+  try {
+    const document = await orderService.update(id, _data);
+    if (!document) {
+      return next(new ApiError(`order with id ${id} not found`, 404));
+    }
+    return res.send(document);
+  } catch (error) {
+    next(new ApiError(`An error accurred while updating order ${id}`, 500));
+  }
+};
+
+exports.reduceProductQuantity = async (req, res, next) => {
+  const { product_id, count } = req.body;
+  const getProduct = await productService.findById(product_id);
+  const newQuantity = getProduct.quantity - count;
+  const _data = {
+    quantity: newQuantity
+  }
+  
+  try {
+    const document = await productService.update(product_id, _data);
+    if (!document) {
+      return next(new ApiError(`Product with id ${id} not found`, 404));
+    }
+    return res.send(document);
+  } catch (error) {
+    next(new ApiError(`An error accurred while updating product ${id}`, 500));
+  }
+}

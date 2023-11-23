@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <router-link :to="`/products/${product.slug}`" v-for="product in products" :key="product._id" class="col-3 p-2">
+    <router-link :to="`/products/${product.slug}`" v-for="product in products" :key="product._id" class="col-2 p-2">
       <div class="product-card">
         <div class="product-image">
           <img style="width: 100%; height: auto;" :src="product.img" alt="">
@@ -33,6 +33,9 @@ export default {
 </script>
 
 <style scoped>
+.row > a {
+  text-decoration: none;
+}
 .product-card {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -55,6 +58,7 @@ export default {
 .product-title {
   font-size: 17px;
   font-weight: 500;
+  color: black;
 }
 
 .product-price {

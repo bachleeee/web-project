@@ -1,12 +1,12 @@
 <template>
     <div class="container">
-        <div class="page row my-5">
+        <div v-if="authStore.isLoggedIn" class="page row my-5">
             <div class="col-md-10">
                 <InputSearch v-model="searchText" />
             </div>
             <div class="mt-3 col-md-4">
                 <h4>
-                    Danh sách sản phẩm
+                    Danh sách sản phẩm 
                     <i class="fa-solid fa-gift"></i>
                 </h4>
                 <ProductList v-if="filteredProductsCount > 0" :products="filteredProducts"
@@ -54,6 +54,8 @@ import ProductCard from "@/components/ProductCard.vue";
 import InputSearch from "@/components/InputSearch.vue";
 import ProductList from "@/components/ProductList.vue";
 import ProductService from "@/services/product.service";
+import { useAuthStore } from '@/store/auth';
+
 export default {
     components: {
         ProductCard,
@@ -96,6 +98,9 @@ export default {
         filteredProductsCount() {
             return this.filteredProducts.length;
         },
+        authStore() {
+      return useAuthStore();
+    },
     },
     methods: {
         async retrieveProducts() {

@@ -2,18 +2,17 @@
     <div class="py-5">
         <div class="container">
             <div class="col-12">
-            </div>
-            <h2>GIỎ HÀNG</h2>
-            <hr>
-            <div class="order-details">
-                <h1>Order Details</h1>
-                <!-- <p><strong>Order ID:</strong> {{ order._id }}</p>
-                <p><strong>Amount:</strong> {{ formatCurrency(order.amount) }}</p>
-                <p><strong>Status:</strong> {{ order.orderStatus }}</p>
-   -->
-                <h2>Products:</h2>
-                <!-- <OrderItem v-for="product in order.products" :key="product._id" :product="product" />
-   -->
+                <h2>ĐƠN HÀNG</h2>
+                <hr>
+                <div class="row">
+                    <div class="col-1"><strong></strong></div>
+                    <div class="col-5"><strong>Danh sách sản phẩm</strong></div>
+                    <div class="col-2"><strong>Tổng cộng</strong></div>
+                    <div class="col-3"><strong>Tình trạng đơn</strong></div>
+                </div>
+                <div class="order-details mt-4">
+                    <OrderItem v-for="order in Orders" :key="order._id" :order="order" />
+                </div>
             </div>
         </div>
     </div>
@@ -21,32 +20,51 @@
   
 <script>
 import OrderItem from '@/components/OrderItem.vue';
+import UserService from '@/service/user.service';
+import { useAuthStore } from '@/store/auth';
+import Cookies from 'js-cookie';
 
 export default {
+    data() {
+        return {
+            Orders: [
+            ],
+        };
+    },
     components: {
         OrderItem,
-    },
-    props: {
-        order: Object,
     },
     methods: {
         formatCurrency(value) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
         },
+        async getUserOrder() {
+            const cookieValue = Cookies.get('token');
+            console.log(cookieValue);
+            try {
+                if (this.authStore.isLoggedIn) {
+                    this.Orders = await UserService.getOrder(cookieValue);
+                    console.log(this.Order);
+                } else {
+                    console.error('User is not logged in.');
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    computed: {
+        authStore() {
+            return useAuthStore();
+        },
+    },
+    mounted() {
+        this.getUserOrder();
     },
 };
 </script>
   
 <style scoped>
-.order-details {
-    margin: 20px;
-}
 
-.back-to-orders {
-    display: block;
-    margin-top: 20px;
-    color: #3498db;
-    text-decoration: none;
-}
 </style>
   

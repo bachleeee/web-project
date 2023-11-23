@@ -29,7 +29,7 @@ export default {
         async createProduct(data) {
             try {
                 await ProductService.create(data);
-                this.message = "Sản phẩm được thêm thành công.";
+                window.alert("Sản phẩm được thêm thành công.");
                 setTimeout(() => {
                     this.$router.push({ name: "product" });
                 }, 2000);

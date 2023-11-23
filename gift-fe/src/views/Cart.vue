@@ -2,7 +2,16 @@
   <div class="py-5">
     <div class="container">
       <div class="col-12">
-        <h2>GIỎ HÀNG</h2>
+        <div class="row d-flex align-items-center">
+          <div class="col-9">
+            <h2>GIỎ HÀNG</h2>
+          </div>
+          <div class="col-3">
+            <router-link to="/order">
+              <h4>Kiểm tra đơn hàng</h4>
+            </router-link>
+          </div>
+        </div>
         <hr>
         <div class="row">
           <CartItem v-for="product in cartProducts" :key="product._id" :product="product" />
@@ -10,8 +19,8 @@
         <div v-if="authStore.isLoggedIn" class="d-flex justify-content-end m-5">
           <div class="total-amount">
             <h3>Tổng tiền: {{ formatCurrency(totalAmount) }}</h3>
-            <div class="btn btn-primary">
-              Thanh toán
+            <div @click="createOrder" class="btn btn-primary">
+              Đặt hàng
             </div>
           </div>
         </div>
@@ -35,23 +44,13 @@ export default {
     return {
       cartProducts: [
       ],
+      showAddToCartMessage: false,
+
     };
   },
   methods: {
     formatCurrency(value) {
       return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-    },
-    async getUser() {
-      try {
-        if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
-          this.user = await UserService.get(this.authStore.user._id);
-          console.log(this.user);
-        } else {
-          console.error('User is not logged in.');
-        }
-      } catch (error) {
-        console.log(error);
-      }
     },
     async getUserCart() {
       const cookieValue = Cookies.get('token');
@@ -67,7 +66,28 @@ export default {
         console.log(error);
       }
     },
-    
+    async createOrder() {
+      try {
+        const cookieValue = Cookies.get('token');
+
+        const result = {
+          total: this.totalAmount
+        }
+
+        console.log(result);
+
+        if (this.authStore.isLoggedIn) {
+          await UserService.crateOrder(cookieValue, result);
+          this.showAddToCartMessage = true;
+        }
+
+        if (this.showAddToCartMessage) {
+          window.alert("Đặt hàng thành công");
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
   computed: {
     totalAmount() {
@@ -80,7 +100,6 @@ export default {
     },
   },
   mounted() {
-    this.getUser();
     this.getUserCart();
   },
 };

@@ -13,12 +13,12 @@
             {{ product.quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}
           </p>
           Giá:
-          
+
           <div class="d-flex justify-content-between my-4 ">
             <p class="price">{{ formatCurrency(product.price) }}</p>
             <div>
-              <label for="quantity" >Số lượng:</label>
-            <input class="quantity-input" type="number" id="quantity" v-model="quantity" min="1">
+              <label for="quantity">Số lượng:</label>
+              <input class="quantity-input" type="number" id="quantity" v-model="quantity" min="1">
             </div>
           </div>
           <div class="d-flex justify-content-center">
@@ -27,9 +27,7 @@
               {{ authStore.isLoggedIn ? 'Đặt hàng' : 'Đăng nhập để đặt hàng' }}
             </button>
           </div>
-          <div class="d-flex justify-content-center">
-              <p v-if="showAddToCartMessage" class="ml-3 text-success">Đã thêm vào giỏ hàng!</p>
-            </div>
+
         </div>
       </div>
     </div>
@@ -79,22 +77,10 @@ export default {
 
       return `${formattedPrice}`;
     },
-    async getUser() {
-      try {
-        if (this.authStore.isLoggedIn) { 
-          this.user = await UserService.get(this.authStore.user._id);
-          console.log(this.user);
-        } else {
-          console.error('User is not logged in.');
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async addToCart() {
       try {
         const cookieValue = Cookies.get('token');
-        
+
         const cartItem = {
           _id: this.product._id,
           count: this.quantity,
@@ -105,10 +91,10 @@ export default {
         if (this.authStore.isLoggedIn) {
           await UserService.addtocart(cookieValue, newCartItemArray);
           this.showAddToCartMessage = true;
+        }
 
-          setTimeout(() => {
-            this.showAddToCartMessage = false;
-          }, 3000);
+        if (this.showAddToCartMessage) {
+          window.alert("Đã thêm sản phẩm vào giỏ hàng");
         }
       } catch (error) {
         console.log(error)
@@ -119,9 +105,6 @@ export default {
     authStore() {
       return useAuthStore();
     },
-  },
-  mounted() {
-    this.getUser();
   },
 };
 </script>
@@ -163,14 +146,13 @@ h1 {
 
 .quantity-input {
   margin: 0;
-  border: 1px solid #ced4da; 
+  border: 1px solid #ced4da;
   width: 60px;
   height: 40px;
-  text-align: center; 
+  text-align: center;
 }
 
 .quantity-input:hover {
-  border-color: #6c757d; 
+  border-color: #6c757d;
 }
-
 </style>

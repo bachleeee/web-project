@@ -32,7 +32,7 @@ export default {
         const confirmed = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?');
 
         if (!confirmed) {
-          return; // Người dùng không xác nhận, không thực hiện xóa
+          return; 
         }
         const cookieValue = Cookies.get('token');
 
@@ -43,7 +43,7 @@ export default {
 
         await UserService.deleteProductFromCart(cookieValue, result);
 
-        router.push('/'); 
+        this.$router.go(0)
       } catch (error) {
         console.error('Error deleting product from cart:', error);
       }
@@ -99,9 +99,7 @@ export default {
 
 .total-price button {
   background-color: #ff0000;
-  /* Màu nền của nút Xóa */
   color: #fff;
-  /* Màu chữ của nút Xóa */
   padding: 5px 10px;
   border: none;
   cursor: pointer;

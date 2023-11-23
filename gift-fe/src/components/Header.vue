@@ -13,19 +13,22 @@
                         <div class="mt-4 d-flex justify-content-end">
                             <div class="btn-click d-flex">
                                 <router-link to="/cart" class="btn-cart mr-2">
-                                    <span><i class="fa fa-shopping-cart"></i></span>
-                                    <!-- <span class="num ml-2">
-                                        {{ authStore.isLoggedIn ? authStore.user.cart.length : 0 }}
-                                    </span> -->
+                                    <span><i class="fa fa-shopping-cart"></i>Giỏ hàng</span>
                                 </router-link>
                                 <div>
-                                    <router-link to="/login" class="btn-user">
-                                        <span><i class="fa fa-user"></i></span>
+                                    <router-link to="/login" v-if="!authStore.isLoggedIn" class="btn-user mr-2">
+                                        <i class="fa fa-user mr-1"></i>
                                     </router-link>
                                 </div>
-                                <div v-if="authStore.isLoggedIn">
+                                <div>
+                                    <router-link to="/user" v-if="authStore.isLoggedIn" class="btn-user">
+                                        {{ authStore.user.name }}
+                                    </router-link>
+                                </div>
+                                <div v-if="authStore.isLoggedIn" class="ml-2">
                                     <button class="btn btn-outline-danger" @click="logoutClick">Đăng xuất</button>
                                 </div>
+                                <div></div>
                             </div>
                         </div>
                         <div class="mt-4 d-flex justify-content-end">
@@ -41,9 +44,9 @@
                                         <option value="gau-bong">Gấu bông</option>
                                         <option value="do-trang-tri">Đồ trang trí</option>
                                     </select>
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-outline-danger">Tìm kiếm</button>
-                                    </div>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-outline-danger">Tìm kiếm</button>
+                                        </div>
                                 </div>
                             </form>
                         </div>
@@ -58,7 +61,7 @@
                         <router-link to="/">Trang chủ</router-link>
                     </li>
                     <li class="menu-item">
-                        <router-link to="/gioi-thieu">Giới thiệu</router-link>
+                        <router-link to="/intro">Giới thiệu</router-link>
                     </li>
                     <li class="dropdown menu-item">
                         <router-link to="/products" class="dropdown-toggle">Sản phẩm</router-link>
@@ -124,7 +127,6 @@ export default {
             const shouldLogout = window.confirm('Bạn có chắc chắn muốn đăng xuất?');
 
             if (shouldLogout) {
-                // Thực hiện đăng xuất
                 this.authStore.logout();
             }
         },
@@ -164,7 +166,7 @@ const logoutClick = () => {
     border-radius: 3px;
     padding: 10px;
     display: block;
-    width: 50px;
+    width: 160px;
     text-align: center;
 }
 

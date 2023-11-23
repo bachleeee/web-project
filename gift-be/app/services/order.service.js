@@ -42,6 +42,15 @@ class OrderService {
     }
   }
 
+  async findAll() {
+    try {
+      const order = await this.databaseServices.order.find().toArray();
+      return order;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   async deleteOneOrder(order_id) {
     try {
       const order = await this.databaseServices.order.findOneAndDelete({
@@ -52,6 +61,28 @@ class OrderService {
       throw new Error(error);
     }
   }
+
+  async update(id, updateOrder) {
+    const filter ={
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    }
+    const update = this.extractOrderData(updateOrder);
+    const options = {
+      returnDocument: "after",
+    };
+    try {
+      const order = await this.databaseServices.order.findOneAndUpdate(
+        filter,
+        {
+          $set: update,
+        },
+        options
+      );
+      return order;
+    } catch (error) {
+      throw new Error(error);
+    }
+}
 
 }
 const databaseSetvices = require("../utils/mongodb.util");

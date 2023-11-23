@@ -1,13 +1,19 @@
 <template>
     <div class="header-wrapper">
-        <div class="container">
-            <h1>Chào mừng đến trang quản lý</h1>
+        <div class="container ">
+            <div class="row top-header">
+                <i class="fa-solid fa-gift"></i>
+                <h1>
+                    Chào mừng đến trang quản lý</h1>
+                <i class="fa-solid fa-gift"></i>
+            </div>
+
         </div>
         <div class="sticky-nav">
             <div class="header-menu container">
                 <ul class="menu-parent">
                     <li class="menu-item">
-                        <router-link to="/">Danh sách sản phẩm</router-link>
+                        <router-link to="/product">Danh sách sản phẩm</router-link>
                     </li>
                     <li class="menu-item">
                         <router-link to="/user">Danh sách khách hàng</router-link>
@@ -21,9 +27,20 @@
     </div>
 </template>
 
-<script>
+<style>
+.top-header {
+    text-align: center;
+    margin: 30px;
+    justify-content: center;
+    background-color: rgb(245, 231, 231);
+}
 
-</script>
+h1 {
+    font-size: 2.5em;
+    color: #f42525;
+    margin-bottom: 20px;
+}
+</style>
 
 <style>
 .sticky-nav {

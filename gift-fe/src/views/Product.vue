@@ -1,42 +1,42 @@
 <template>
     <div class="container">
+        <div class="col-7 text-align-center;">
+             <div class="d-flex justify-content-between align-items-center mb-3">
+            <input v-model="searchTerm" type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
+        </div>
+        </div>
+       
         <div class="row">
-            <div class="col-3">
-                <Filter :products="products" />
-            </div>
-            <div class="col-9">
-                <div class="filter-sort-grid">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <div class="d-flex align-items-center gap-10">
-                            <div class="mb-0">Sort by</div>
-                            <select name="" id="" class="form-control form-select">
+            <div class="col-12">
 
-                            </select>
-                        </div>
-                        <div class="d-flex"></div>
-                    </div>
-                </div>
                 <div class="products-list pb-5">
-                    <ProductList :products="products" />
+                    <ProductList :products="filteredProducts" />
                 </div>
             </div>
         </div>
     </div>
 </template>
-  
+
 <script>
-import Filter from "@/components/Filter.vue";
 import ProductService from "@/service/product.service";
 import ProductList from '@/components/ProductList.vue';
+
 export default {
     components: {
         ProductList,
-        Filter,
     },
     data() {
         return {
             products: [],
+            searchTerm: '',
         };
+    },
+    computed: {
+        filteredProducts() {
+            return this.products.filter(product =>
+                product.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+            );
+        },
     },
     methods: {
         async getAllProduct() {
@@ -46,13 +46,16 @@ export default {
                 console.log(error);
             }
         },
+        searchProducts() {
+            
+        },
     },
     mounted() {
         this.getAllProduct();
     },
-
 };
 </script>
+
 
 <style scoped>
 .container {

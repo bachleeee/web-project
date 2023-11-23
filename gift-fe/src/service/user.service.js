@@ -20,33 +20,64 @@ class UserService {
     }
     async deleteProductFromCart(token, data) {
         try {
-          const response = await this.api.delete('/cart', {
-            data: data,
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-          });
-      
-          return response.data;
+            const response = await this.api.delete('/cart', {
+                data: data,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+
+            return response.data;
         } catch (error) {
-          throw new Error(error);
+            throw new Error(error);
         }
-      }
-      
+    }
+
     async addtocart(token, data) {
-        return (await this.api.post('/cart', data,{
+        return (await this.api.post('/cart', data, {
             headers: {
-                Authorization: `Bearer ${token}`, 
+                Authorization: `Bearer ${token}`,
             },
         })).data;
     }
-    
+
     async getCart(token) {
-        return (await this.api.get('/cart',{
+        return (await this.api.get('/cart', {
             headers: {
-                Authorization: `Bearer ${token}`, 
+                Authorization: `Bearer ${token}`,
             },
         })).data;
+    }
+
+    async crateOrder(token, data) {
+        return (await this.api.post('/order', data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })).data;
+    }
+
+    async getOrder(token) {
+        return (await this.api.get('/order', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })).data;
+    }
+
+    async deleteOrder(token, data) {
+        try {
+            const response = await this.api.delete('/order', {
+                data: data,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+
+            return response.data;
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
 export default new UserService();

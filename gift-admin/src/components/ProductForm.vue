@@ -71,8 +71,6 @@ export default {
 
     });
     return {
-      // Chúng ta sẽ không muốn hiệu chỉnh props, nên tạo biến cục bộ
-      // productLocal để liên kết với các input trên form
       productLocal: this.product,
       productFormSchema,
       productTypes: [
@@ -90,7 +88,6 @@ export default {
       this.$emit("delete:product", this.productLocal.id);
     },
     formattedCategory() {
-    // Chuyển đổi giá trị loại sản phẩm nếu cần
     const selectedType = this.productTypes.find(type => type.value === this.productLocal.category);
     return selectedType ? selectedType.label : '';
   },
