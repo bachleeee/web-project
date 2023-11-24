@@ -27,6 +27,3 @@ coverage
 *.sln
 *.sw?
 
-package.json
-
-package-lock.json
