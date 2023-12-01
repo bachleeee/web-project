@@ -38,6 +38,7 @@ export const useAuthStore = defineStore('auth', {
       this.error = '';
       this.isLoggedIn = false;
       Cookies.remove('isLoggedIn');
+      Cookies.remove('user');
     },
     checkLoginStatus() {
       const isLoggedIn = Cookies.get('isLoggedIn');

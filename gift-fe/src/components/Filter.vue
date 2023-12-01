@@ -1,42 +1,48 @@
 <template>
-    <div class="filter-card mb-3">
-        <h3 class="filter-title">Tất cả sản phẩm</h3>
-        <ul>
-            <li>Cốc sứ</li>
-            <li>Khung ảnh</li>
-            <li>Gấu bông</li>
-            <li>Đồng hồ</li>
-            <li>Đồ trang trí</li>
-        </ul>
-    </div>
-    <div class="filter-card mb-3">
-        <h3 class="filter-title">Lọc</h3>
-        <div>
-            <hr>
-            <h5 class="sub-title">Tình trạng</h5>
-            <div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="" id="">
-                    <label for="" class="form-check-label">Còn hàng</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="" id="">
-                    <label for="" class="form-check-label">Hết hàng</label>
-                </div>
-            </div>
-            <hr>
-            <h5 class="sub-title">Giá</h5>
-            <div class="d-flex align-items-center">
-                <form class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInputValue" placeholder="From">
-                </form>
-                <form class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInputValue" placeholder="To">
-                </form>
-            </div>
+    <div>
+        <div class="filter-card mb-3">
+            <h3 class="filter-title">Thể loại</h3>
+            <ul>
+                <li v-for="(category, index) in categories" :key="index" @click="filterByCategory(category)">
+                    {{ formatCategory(category) }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
+  
+<script>
+export default {
+    data() {
+        return {
+            categories: ["van-hoc", "kinh-te", "tam-ly-hoc", "ngoai-ngu"],
+            statuses: ["Còn hàng", "Hết hàng"],
+            selectedStatus: [],
+            minPrice: null,
+            maxPrice: null,
+        };
+    },
+    methods: {
+        filterByCategory(category) {
+            this.$router.push(`/${category}`);
+        },
+        formatCategory(category) {
+            switch (category) {
+                case 'van-hoc':
+                    return 'Văn học';
+                case 'tam-ly-hoc':
+                    return 'Tâm lý học';
+                case 'kinh-te':
+                    return 'Kinh tế';
+                case 'ngoai-ngu':
+                    return 'Ngoại ngữ';
+                default:
+                    return category;
+            }
+        },
+    },
+};
+</script>
 
 <style scoped>
 .filter-card {
@@ -46,7 +52,7 @@
 }
 
 .filter-title {
-    color: red;
+    color: #C92127;
     font-size: 1.5rem;
     margin-bottom: 10px;
 }

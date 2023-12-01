@@ -1,10 +1,10 @@
 <template>
-  <div class="py-5">
+  <div class="page py-5">
     <div class="container">
       <div class="col-12">
         <div class="row d-flex align-items-center">
           <div class="col-9">
-            <h2>GIỎ HÀNG</h2>
+            <h2>Thông tin giỏ hàng</h2>
           </div>
           <div class="col-3">
             <router-link to="/order">
@@ -14,7 +14,9 @@
         </div>
         <hr>
         <div class="row">
-          <CartItem v-for="product in cartProducts" :key="product._id" :product="product" />
+          <div class="col-12">
+            <CartItem v-for="product in cartProducts" :key="product._id" :product="product" />
+          </div>
         </div>
         <div v-if="authStore.isLoggedIn" class="d-flex justify-content-end m-5">
           <div class="total-amount">
@@ -56,7 +58,7 @@ export default {
       const cookieValue = Cookies.get('token');
       console.log(cookieValue);
       try {
-        if (this.authStore.isLoggedIn) { // Kiểm tra isLoggedIn trước khi gọi UserService
+        if (this.authStore.isLoggedIn) {
           this.cartProducts = await UserService.getCart(cookieValue);
           console.log(this.cartProducts);
         } else {
@@ -83,6 +85,7 @@ export default {
 
         if (this.showAddToCartMessage) {
           window.alert("Đặt hàng thành công");
+          router.push('/order');
         }
       } catch (error) {
         console.log(error)
@@ -106,6 +109,11 @@ export default {
 </script>
   
 <style scoped>
+.container {
+    padding-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+}
 .btn-primary {
   font-size: 25px;
 }

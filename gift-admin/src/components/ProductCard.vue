@@ -6,16 +6,14 @@ export default {
   methods: {
     formatCategory(category) {
       switch (category) {
-        case 'coc-su':
-          return 'Cốc sứ';
-        case 'khung-anh':
-          return 'Khung ảnh';
-        case 'dong-ho':
-          return 'Đồng hồ';
-        case 'do-trang-tri':
-          return 'Đồ trang trí';
-        case 'gau-bong':
-          return 'Gấu bông';
+        case 'van-hoc':
+          return 'Văn học';
+        case 'tam-ly-hoc':
+          return 'Tâm lý học';
+        case 'kinh-te':
+          return 'Kinh tế';
+        case 'ngoai-ngu':
+          return 'Ngoại ngữ';
         default:
           return category;
       }

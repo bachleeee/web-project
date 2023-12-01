@@ -21,8 +21,8 @@
         <h5 :style="{ color: getStatusColor(order.orderStatus) }">{{ displayOrderStatus }}</h5>
       </div>
       <div class="col-1">
-  <button v-if="orderStatus === 'placed'" class="btn-xoa" @click="removeOrder">Xóa</button>
-</div>
+        <button v-if="order.orderStatus === 'placed'" class="btn-xoa" @click="removeOrder">Hủy đơn</button>
+      </div>
     </div>
   </div>
 </template>

@@ -7,6 +7,10 @@ import Cart from '@/views/Cart.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
 import Order from '@/views/Order.vue';
 import Intro from '@/views/Intro.vue';
+import VanHocBook from '@/views/VanHocBook.vue';
+import TamLyBook from '@/views/TamLyBook.vue';
+// import VanHocBook from '@/views/VanHocBook.vue';
+// import VanHocBook from '@/views/VanHocBook.vue';
 const routes = [
     {
         path: "/",
@@ -20,7 +24,7 @@ const routes = [
         props: true,
     },
     {
-        path: "/products",
+        path: "/search",
         name: "Product",
         component: Product,
     },
@@ -53,6 +57,16 @@ const routes = [
         path: "/intro",
         name: "intro",
         component: Intro,
+    },
+    {
+        path: "/van-hoc",
+        name: "van-hoc",
+        component: VanHocBook,
+    },
+    {
+        path: "/tam-ly-hoc",
+        name: "tam-ly-hoc",
+        component: TamLyBook,
     },
 ];
 const router = createRouter({

@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import Cookies from 'js-cookie';
+
 import UserService from '@/services/user.service';
 
 export const useAuthStore = defineStore('auth', {
@@ -17,6 +19,11 @@ export const useAuthStore = defineStore('auth', {
           console.log("đăng nhập thành công")
           this.isLoggedIn = true;
           this.user = await UserService.get(response._id);
+          console.log(this.user)
+          
+          Cookies.set('isLoggedIn', 'true', { expires: 7 });
+          Cookies.set('user', JSON.stringify(this.user), { expires: 7 });
+
         } else {
           this.isAuthenticated = false;
           this.error = response ? response.message : 'Đăng nhập không thành công';
@@ -31,7 +38,17 @@ export const useAuthStore = defineStore('auth', {
       this.authUser = null;
       this.error = '';
       this.isLoggedIn = false;
+      Cookies.remove('isLoggedIn');
+      Cookies.remove('user');
+
     },
-   
+    checkLoginStatus() {
+      const isLoggedIn = Cookies.get('isLoggedIn');
+      const userString = Cookies.get('user');
+
+      this.isLoggedIn = isLoggedIn === 'true';
+
+      this.user = userString ? JSON.parse(userString) : null;
+    },
   },
 });

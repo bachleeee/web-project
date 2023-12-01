@@ -3,31 +3,43 @@
     <div class="container">
       <div class="row">
         <div class="col-4">
-          <img :src="product.img">
-        </div>
-        <div class="col-4">
-          <h1>{{ product.name }}</h1>
-          Mô tả:
-          <p class="description">{{ product.description }}</p>
-          <p class="status">Tình trang:
-            {{ product.quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}
-          </p>
-          Giá:
-
-          <div class="d-flex justify-content-between my-4 ">
-            <p class="price">{{ formatCurrency(product.price) }}</p>
-            <div>
-              <label for="quantity">Số lượng:</label>
-              <input class="quantity-input" type="number" id="quantity" v-model="quantity" min="1">
-            </div>
-          </div>
-          <div class="d-flex justify-content-center">
+          <img :src="product.img" style="width: 370px;">
+          <div class="d-flex justify-content-center mt-4">
             <button type="button" class="btn btn-danger btn-lg" :class="{ 'btn-disabled': product.quantity <= 0 }"
               :disabled="product.quantity <= 0 || !authStore.isLoggedIn" @click="addToCart">
-              {{ authStore.isLoggedIn ? 'Đặt hàng' : 'Đăng nhập để đặt hàng' }}
+              {{ authStore.isLoggedIn ? 'Thêm vào giỏ hàng' : 'Đăng nhập để Thêm vào giỏ hàng' }}
             </button>
           </div>
-
+        </div>
+        <div class="col-7">
+          <h1>{{ product.name }}</h1>
+          <p class="status">Tình trang:
+            {{ product.quantity > 0 ? 'Còn hàng' : 'Hết hàng' }}
+      
+          </p>
+          <p class="nxb">Nhà xuất bản: Nhà xuất bản trẻ
+          </p>
+          <div class="d-flex justify-content-between my-4 ">
+            <p class="price">{{ formatCurrency(product.price) }}</p>
+          </div>
+          <div>
+            <label for="quantity">Số lượng:</label>
+            <input class="quantity-input" type="number" id="quantity" v-model="quantity" min="1">
+          </div>
+        </div>
+      </div>
+      <div class="home-section mt-4">
+        <div class="home-book">
+          <div class="top-title p-3">
+            <div class="row">
+              <div class="col-2">
+                <p class="des">Mô tả</p>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <p>{{ product.description }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -48,6 +60,7 @@ export default {
       user: null,
       quantity: 1,
       showAddToCartMessage: false,
+      maxQuantityExceeded: false,
     };
   },
   async created() {
@@ -89,12 +102,20 @@ export default {
         const newCartItemArray = { cart: [cartItem] };
 
         if (this.authStore.isLoggedIn) {
-          await UserService.addtocart(cookieValue, newCartItemArray);
-          this.showAddToCartMessage = true;
+          if (this.quantity > this.product.quantity) {
+            this.maxQuantityExceeded = true;
+          } else {
+            await UserService.addtocart(cookieValue, newCartItemArray);
+            this.showAddToCartMessage = true;
+          }
         }
 
-        if (this.showAddToCartMessage) {
+        if (this.maxQuantityExceeded) {
+          window.alert("Quá số lượng sản phẩm");
+          this.$router.go(0)
+        } else if (this.showAddToCartMessage) {
           window.alert("Đã thêm sản phẩm vào giỏ hàng");
+          this.$router.go(0)
         }
       } catch (error) {
         console.log(error)
@@ -139,7 +160,7 @@ h1 {
 }
 
 .price {
-  font-size: 24px;
+  font-size: 30px;
   color: #e44d26;
   font-weight: bold;
 }

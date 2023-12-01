@@ -1,5 +1,5 @@
 <template>
-    <div v-if="product" class="container mt-4">
+    <div v-if="product" class="container mt-4  d-flex flex-column align-items-center">
         <h4>Hiệu chỉnh sản phẩm</h4>
         <ProductForm :product="product" @submit:product="updateProduct" @delete:product="deleteProduct" />
         <p>{{ message }}</p>

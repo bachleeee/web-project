@@ -6,8 +6,11 @@ class ProductService {
     async create(data) {
         return (await this.api.post("/", data)).data;
     }
-    async getAll() {
-        return (await this.api.get("/")).data;
+    async getAll(name,page, limit) {
+        return (await this.api.get(`/?name=${name}`,{ params: { page, limit } })).data;
+    }
+    async getAllCat(cat, page, limit) {
+        return (await this.api.get(`/?category=${cat}`, { params: { page, limit } })).data;
     }
     async deleteAll() {
         return (await this.api.delete("/")).data;

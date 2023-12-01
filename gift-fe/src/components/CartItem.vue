@@ -1,19 +1,22 @@
 <template>
-  <div class="cart-item col-6 ">
-    <div class="product-info">
+  <div class="cart-item row">
+    <div class="col-md-1">
       <img :src="product.products[0].img" alt="Product Image" class="product-image">
+    </div>
+    <div class="col-md-6">
       <div class="product-details">
-        <h4>{{ product.products[0].name }}</h4>
+        <h5>{{ product.products[0].name }}</h5>
         <p>Giá: {{ formatCurrency(product.products[0].price) }}</p>
         <p>Số lượng: {{ product.products[0].count }}</p>
       </div>
     </div>
-    <div class="total-price">
+    <div class="col-md-2 total-price">
       <p>Tổng: {{ formatCurrency(product.cartTotal) }}</p>
-      <button @click="removeFromCart">Xóa</button>
+      <button @click="removeFromCart" class="btn btn-danger">Xóa</button>
     </div>
   </div>
 </template>
+
 
 <script>
 import UserService from '@/service/user.service';
@@ -61,7 +64,6 @@ export default {
   margin-bottom: 15px;
   padding: px;
   border: 1px solid #575656;
-  border-radius: 10px;
   width: 90%;
 }
 
@@ -72,9 +74,7 @@ export default {
 
 .product-image {
   width: 170px;
-  /* Điều chỉnh kích thước ảnh sản phẩm */
   height: auto;
-  /* Đảm bảo tỷ lệ hình ảnh không bị biến đổi */
   margin-right: 10px;
 }
 

@@ -1,5 +1,6 @@
 <template>
-    <div class="container">
+    <div class="page py-4">
+        <div class="container">
         <div class="row">
             <div class="col-3">
                 <Filter />
@@ -7,10 +8,8 @@
             <div class="col-9">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-outline-secondary" @click="sortByPrice('asc')">Giá thấp đến
-                            cao</button>
-                        <button class="btn btn-sm btn-outline-secondary" @click="sortByPrice('desc')">Giá cao đến
-                            thấp</button>
+                        <button class="btn btn-sm btn-outline-secondary" @click="sortByPrice('asc')">Giá thấp đến cao</button>
+                        <button class="btn btn-sm btn-outline-secondary" @click="sortByPrice('desc')">Giá cao đến thấp</button>
                         <button class="btn btn-sm btn-outline-secondary" @click="sortBySale('desc')">Sách bán chạy</button>
                     </div>
                 </div>
@@ -30,6 +29,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -58,14 +58,6 @@ export default {
                 this.getAllProduct();
             },
         },
-        $route(to, from) {
-            // Khi route thay đổi, kiểm tra xem có tham số `name` trong query không
-            if (to.query.name) {
-                // Nếu có, gán giá trị vào biến searchTerm và gọi hàm getAllProduct
-                this.searchTerm = to.query.name;
-                this.getAllProduct();
-            }
-        },
     },
     methods: {
         increasePage() {
@@ -79,9 +71,8 @@ export default {
         async getAllProduct() {
             try {
                 const limit = 12;
-                const name = this.$route.query.name;
-                this.products = await ProductService.getAll(name, this.currentPage, limit);
-                this.sortByPrice('asc');
+                this.products = await ProductService.getAllCat('van-hoc', this.currentPage, limit);
+                this.sortByPrice('asc'); // Sắp xếp mặc định khi lấy dữ liệu mới
             } catch (error) {
                 console.log(error);
             }
@@ -109,6 +100,11 @@ export default {
   
 
 <style scoped>
+.container {
+    padding-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+}
 .container {
     padding-top: 20px;
 }

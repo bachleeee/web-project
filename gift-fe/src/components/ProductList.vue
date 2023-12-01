@@ -1,17 +1,15 @@
 <template>
-  <div class="row">
-    <router-link :to="`/products/${product.slug}`" v-for="product in products" :key="product._id" class="col-2 p-2">
-      <div class="product-card">
-        <div class="product-image">
-          <img style="width: 100%; height: auto;" :src="product.img" alt="">
-        </div>
-        <div class="product-detail m-1">
-          <div class="product-title"> {{ product.name }}</div>
-          <p class="product-price">{{ formatCurrency(product.price) }}</p>
-        </div>
+  <router-link :to="`/products/${product.slug}`" v-for="product in products" :key="product._id" class="col-3">
+    <div class="product-card mb-4">
+      <div class="">
+        <img style="width: 80%; height: auto;" :src="product.img" alt="">
       </div>
-    </router-link>
-  </div>
+      <div class="product-detail m-1">
+        <div class="product-title"> {{ product.name }}</div>
+        <p class="product-price">{{ formatCurrency(product.price) }}</p>
+      </div>
+    </div>
+  </router-link>
 </template>
   
 <script>
@@ -33,31 +31,23 @@ export default {
 </script>
 
 <style scoped>
-.row > a {
+.row>a {
   text-decoration: none;
 }
+
 .product-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  height: 290px;
+  height: 250px;
 }
 
 .product-card:hover {
   transform: scale(1.05);
 }
 
-.product-image>img {
-  width: 100%;
-  height: auto;
-  border-bottom: 1px solid #ddd;
-}
 
 .product-title {
   font-size: 17px;
-  font-weight: 500;
   color: black;
 }
 

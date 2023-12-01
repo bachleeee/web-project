@@ -1,38 +1,51 @@
 <template>
-  <div class="container">
+  <div class="container ">
     <Form @submit="submitProduct" :validation-schema="productFormSchema">
-      <div class="form-group">
-        <label for="name">Tên sản phẩm</label>
-        <Field name="name" type="text" class="form-control" v-model="productLocal.name" />
-        <ErrorMessage name="name" class="error-feedback" />
+    
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="name">Tên sản phẩm</label>
+            <Field name="name" type="text" class="form-control" v-model="productLocal.name" />
+            <ErrorMessage name="name" class="error-feedback" />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="category">Loại sản phẩm</label>
+            <Field as="select" name="category" class="form-control" v-model="productLocal.category">
+              <option value="">Chọn loại sản phẩm</option>
+              <option value="van-hoc">Văn học</option>
+              <option value="tam-ly-hoc">Tâm lý học</option>
+              <option value="kinh-te">Kinh tế</option>
+              <option value="ngoai-ngu">Ngoại ngữ</option>
+            </Field>
+            <ErrorMessage name="category" class="error-feedback" />
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="category">Loại sản phẩm</label>
-        <Field as="select" name="category" class="form-control" v-model="productLocal.category">
-          <option value="">Chọn loại sản phẩm</option>
-          <option value="coc-su">Cốc sứ</option>
-          <option value="khung-anh">Khung ảnh</option>
-          <option value="dong-ho">Đồng hồ</option>
-          <option value="do-trang-tri">Đồ trang trí</option>
-          <option value="gau-bong">Gấu bông</option>
-        </Field>
-        <ErrorMessage name="category" class="error-feedback" />
-      </div>
+
       <div class="form-group">
         <label for="description">Mô tả</label>
         <Field name="description" type="text" class="form-control" v-model="productLocal.description" />
         <ErrorMessage name="description" class="error-feedback" />
       </div>
-      <div class="form-group">
-        <label for="price">Giá</label>
-        <Field name="price" type="number" class="form-control" v-model="productLocal.price" />
-        <ErrorMessage name="price" class="error-feedback" />
+      
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="price">Giá</label>
+          <Field name="price" type="number" class="form-control" v-model="productLocal.price" />
+          <ErrorMessage name="price" class="error-feedback" />
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="quantity">Số lượng</label>
+          <Field name="quantity" type="number" class="form-control" v-model="productLocal.quantity" />
+          <ErrorMessage name="quantity" class="error-feedback" />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="quantity">Số lượng</label>
-        <Field name="quantity" type="number" class="form-control" v-model="productLocal.quantity" />
-        <ErrorMessage name="quantity" class="error-feedback" />
-      </div>
+
       <div class="form-group">
         <label for="img">Hình ảnh</label>
         <Field name="img" type="text" class="form-control" v-model="productLocal.img" />
@@ -65,19 +78,13 @@ export default {
     const productFormSchema = yup.object().shape({
       name: yup
         .string()
-        .required("Tên phải có giá trị.")
         .min(2, "Tên phải ít nhất 2 ký tự.")
         .max(50, "Tên có nhiều nhất 50 ký tự."),
-
     });
     return {
       productLocal: this.product,
       productFormSchema,
-      productTypes: [
-      { value: 'coc-su', label: 'Cốc sứ' },
-      { value: 'khung-anh', label: 'Khung ảnh' },
-      { value: 'dong-ho', label: 'Đồng hồ' },
-    ],
+     
     };
   },
   methods: {
@@ -87,13 +94,11 @@ export default {
     deleteProduct() {
       this.$emit("delete:product", this.productLocal.id);
     },
-    formattedCategory() {
-    const selectedType = this.productTypes.find(type => type.value === this.productLocal.category);
-    return selectedType ? selectedType.label : '';
-  },
+    
   },
 };
 </script>
+
 <style scoped>
 .form-group {
   margin-bottom: 20px;
@@ -106,7 +111,6 @@ label {
 }
 
 .form-control {
-  width: 50%;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;

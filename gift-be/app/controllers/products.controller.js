@@ -15,25 +15,35 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
+
 exports.findAll = async (req, res, next) => {
   let documents = [];
   try {
-    const { name, category } = req.query;
+    const { name, category, page, limit } = req.query;
+
+    const pageNumber = parseInt(page) || 1;
+    const limitNumber = parseInt(limit) || 10;
 
     if (name && category) {
-      documents = await productService.findByNameAndCategory(name, category);
+      documents = await productService.findByNameAndCategoryPaged(
+        name,
+        category,
+        pageNumber,
+        limitNumber
+      );
     } else if (name) {
-      documents = await productService.findByName(name);
+      documents = await productService.findByNamePaged(name, pageNumber, limitNumber);
     } else if (category) {
-      documents = await productService.findByCategory(category);
+      documents = await productService.findByCategoryPaged(category, pageNumber, limitNumber);
     } else {
-      documents = await productService.findAll();
+      documents = await productService.findAllPaged(pageNumber, limitNumber);
     }
   } catch (error) {
     next(new ApiError("An error occurred while retrieving products", 500));
   }
   return res.send(documents);
 };
+
 
 exports.findOneBySlug = async (req, res, next) => {
   const { slug } = req.params;

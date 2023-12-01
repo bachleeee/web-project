@@ -28,56 +28,71 @@ class ProductService {
     return result;
   }
 
-  async findAll() {
+  async findAllPaged(page, limit) {
     try {
-      const products = await this.databaseSetvices.products.find().toArray();
-      return products;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  async findByName(name) {
-    try {
-      const products = await this.databaseSetvices.products
-        .find({
-          name: {
-            $regex: new RegExp(name),
-            $options: "i",
-          },
-        }).toArray()
+      const skip = (page - 1) * limit;
+      const products = await this.databaseSetvices.products.find().skip(skip).limit(limit).toArray();
       return products;
     } catch (error) {
       throw new Error(error);
     }
   }
   
-async findByCategory(category) {
-  try {
-    const products = await this.databaseSetvices.products.find({
-      category: category,
-    }).toArray();
-    return products;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-  async findByNameAndCategory(name, category) {
+  async findByNamePaged(name, page, limit) {
     try {
-      // Sử dụng logic tìm kiếm phù hợp với cơ sở dữ liệu của bạn
-      const products = await this.databaseSetvices.products.find({
-        name: {
-          $regex: new RegExp(name),
-          $options: "i",
-        },
-        category: category,
-      }).toArray();
+      const skip = (page - 1) * limit;
+      const products = await this.databaseSetvices.products
+        .find({
+          name: {
+            $regex: new RegExp(name),
+            $options: "i",
+          },
+        })
+        .skip(skip)
+        .limit(limit)
+        .toArray();
       return products;
     } catch (error) {
       throw new Error(error);
     }
   }
+  
+  async findByCategoryPaged(category, page, limit) {
+    try {
+      const skip = (page - 1) * limit;
+      const products = await this.databaseSetvices.products
+        .find({
+          category: category,
+        })
+        .skip(skip)
+        .limit(limit)
+        .toArray();
+      return products;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
+  async findByNameAndCategoryPaged(name, category, page, limit) {
+    try {
+      const skip = (page - 1) * limit;
+      const products = await this.databaseSetvices.products
+        .find({
+          name: {
+            $regex: new RegExp(name),
+            $options: "i",
+          },
+          category: category,
+        })
+        .skip(skip)
+        .limit(limit)
+        .toArray();
+      return products;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
 
   async findBySlug(slug) {
     try {

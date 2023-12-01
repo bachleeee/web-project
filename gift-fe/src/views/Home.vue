@@ -1,88 +1,76 @@
 <template>
     <div class="page">
-        <div class="main-banner">
-            <img src="../assets/img/main-banner.png" alt="">
-        </div>
-        <div class="container ">
-            <div class="main-bg ">
-                <div class="intro-container mb-5 mt-4">
-                    <div class="row">
-                        <div class="col">
-                            <div class="policyHome d-flex flex-row">
-                                <div class="img mr-2">
-                                    <img src="../assets/img/widget/ribbon.png" alt="">
-                                </div>
-                                <div class="text">
-                                    <div class="t1">
-                                        SẢN PHẨM ĐA DẠNG
-                                    </div>
-                                    <div class="t2">
-                                        Hơn 1000 sản phẩm
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="policyHome d-flex flex-row">
-                                <div class="img mr-2">
-                                    <img src="../assets/img/widget/delivery.png" alt="">
-                                </div>
-                                <div class="text">
-                                    <div class="t1">
-                                        GIAO HÀNG TẬN NƠI
-                                    </div>
-                                    <div class="t2">
-                                        Áp dụng cho toàn quốc
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="policyHome d-flex flex-row">
-                                <div class="img mr-2">
-                                    <img src="../assets/img/widget/shopping.png" alt="">
-                                </div>
-                                <div class="text">
-                                    <div class="t1">
-                                        ĐỔI TRẢ MIỄN PHÍ
-                                    </div>
-                                    <div class="t2">
-                                        Đổi trả trong vòng 7 ngày
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="policyHome d-flex flex-row">
-                                <div class="img mr-2">
-                                    <img src="../assets/img/widget/shopping-cart.png" alt="">
-                                </div>
-                                <div class="text">
-                                    <div class="t1">
-                                        DỊCH VỤ HOÀN HẢO
-                                    </div>
-                                    <div class="t2">
-                                        Gói quà, thiệp miễn phí
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="container py-3">
+            <div class="row">
+                <div class="col-8">
+                    <div style="">
+                        <swiper :pagination="true" :modules="modules" class="mySwiper">
+                            <swiper-slide><img src="../assets/img/banner/1.jpg" alt=""></swiper-slide>
+                            <swiper-slide><img src="../assets/img/banner/2.jpg" alt=""></swiper-slide>
+                            <swiper-slide><img src="../assets/img/banner/3.jpg" alt=""></swiper-slide>
+                        </swiper>
                     </div>
                 </div>
-                <div class="intro-container mb-5">
-                    <div class="intro-title">
-                        <h2>QUÀ TẶNG MỚI NHẤT</h2>
-                    </div>
-                    <div class="intro-product mt-4">
-                        <div class="row d-flex justify-content-center">
-                            <ProductList :products="visibleProducts" />
+                <div class="col-4">
+                    <img src="../assets/img/banner/4.png" alt="">
+                    <img src="../assets/img/banner/5.png" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="intro-section">
+                <div class="top-title p-3">
+                   
+                    <h5>
+                        Danh mục sản phẩm
+                    </h5>
+                    
+                </div>
+                <div class="content">
+                    <div class="row mx-4">
+                        <div class="col-2">
+                            <img src="../assets/img/widget/kt.jpg" alt="">
+                            <p>Kinh tế</p>
+                        </div>
+                        <div class="col-2">
+                            <img src="../assets/img/widget/nt.jpg" alt="">
+                            <p>Ngôn tình</p>
+                        </div>
+                        <div class="col-2">
+                            <img src="../assets/img/widget/tl.jpg" alt="">
+                            <p>Tâm lý</p>
+                        </div>
+                        <div class="col-2">
+                            <img src="../assets/img/widget/tt.jpg" alt="">
+                            <p>Tiểu thuyết</p>
+                        </div>
+                        <div class="col-2">
+                            <img src="../assets/img/widget/vh.jpg" alt="">
+                            <p>Văn học</p>
+                        </div>
+                        <div class="col-2">
+                            <img src="../assets/img/widget/tn.jpg" alt="">
+                            <p>Thiếu nhi</p>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="home-section">
+                <div class="top-title p-3">
+                    <h5>
+                        Sách bán chạy
+                    </h5>
+                    
+                </div>
+                <div class="content">
+                    <div class="row d-flex justify-content-center">
+                        <ProductList :products="visibleProducts" />
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>  
-    <div>{{ authStore.name }}</div>
+    </div>
 </template>
 
 <script>
@@ -90,22 +78,40 @@ import ProductService from "@/service/product.service";
 import ProductList from "@/components/ProductList.vue";
 import { useAuthStore } from '@/store/auth';
 
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
+// Import Swiper styles
+import 'swiper/css';
+
+import 'swiper/css/pagination';
+
+
+// import required modules
+import { Pagination } from 'swiper/modules';
+
 export default {
     components: {
         ProductList,
+        Swiper,
+        SwiperSlide,
+    },
+    setup() {
+        return {
+            modules: [Pagination],
+        };
     },
     data() {
         return {
             products: [],
             visibleProducts: [],
-            maxVisibleProducts: 4,
+            maxVisibleProducts: 8,
             user: null
         };
     },
     methods: {
-        async getFourProduct() {
+        async getHomeProduct() {
             try {
-                this.products = await ProductService.getAll();
+                this.products = await ProductService.getAllCat("van-hoc");
                 this.updateVisibleProducts();
             } catch (error) {
                 console.log(error);
@@ -114,7 +120,7 @@ export default {
         updateVisibleProducts() {
             this.visibleProducts = this.products.slice(0, this.maxVisibleProducts);
         },
-        
+
     },
     computed: {
         authStore() {
@@ -122,7 +128,7 @@ export default {
         },
     },
     mounted() {
-        this.getFourProduct();
+        this.getHomeProduct();
     },
 
 
@@ -130,48 +136,39 @@ export default {
 </script>
 
 <style scoped>
+.page {
+    background-color: #F0F0F0;
+}
+
 .col {
     padding-left: 5px;
     padding-right: 5px;
 
 }
 
-.main-banner img {
+.home-section {
+    height: 650px;
+    border-radius: 20px;
+    background-color: white;
+    margin: 0px;
+}
+
+.intro-section {
+    height: 230px;
+    border-radius: 20px;
+    background-color: white;
+    margin: 20px 0px;
+}
+
+.swiper-slide>img {
     width: 100%;
     height: auto;
-    display: block;
-    /* Loại bỏ khoảng trắng dưới ảnh */
-    margin: 0 auto;
-    /* Canh giữa ảnh */
+    /* Đảm bảo tỷ lệ khung hình bảo toàn */
 }
 
-.main-bg {
-    background-color: white;
-}
-
-.policyHome {
+.top-title {
+    background-color: rgb(255, 193, 203);
+    border-radius: 20px  20px 0 0 ;
     margin-bottom: 20px;
-    padding: 10px 20px;
-    background: #f6f6f6;
-    border: 1px solid #f7a9a9;
-}
-
-.policyHome .img {
-    padding: 10px;
-    border: 1px solid #f7a9a9;
-    border-radius: 50%;
-}
-
-.policyHome .text .t1 {
-    font-weight: 500;
-}
-
-.policyHome .text .t2 {
-    font-size: 14px;
-    color: #838282;
-}
-
-.intro-title {
-    border-bottom: 2px solid red;
 }
 </style>

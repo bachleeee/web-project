@@ -9,3 +9,7 @@ import { createPinia } from 'pinia';
 const pinia = createPinia();
 
 createApp(App).use(pinia).use(router).mount("#app");
+import { useAuthStore } from '@/store/auth';
+
+const MyauthStore = useAuthStore();
+MyauthStore.checkLoginStatus();

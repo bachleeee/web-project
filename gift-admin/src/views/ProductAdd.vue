@@ -1,6 +1,6 @@
 <template>
-    <div class="container mt-4">
-        <h4>Thêm phẩm mới</h4>
+    <div class="m-5  d-flex flex-column align-items-center">
+        <h4>Thêm sản phẩm mới</h4>
         <ProductForm :product="product" @submit:product="createProduct" />
         <p>{{ message }}</p>
     </div>
